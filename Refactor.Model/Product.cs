@@ -10,7 +10,7 @@ namespace Refactor.Model
         decimal DeliveryPrice { get; set; }
     }
 
-    public class Product : Persistance.Model
+    public class Product : Persistance.Entities.Model
     {
         public string Name { get; private set; }
         public string Description { get; private set; }

@@ -9,8 +9,6 @@ namespace refactor_me.Models
         [Required]
         public Guid Id { get; set; }
         [Required]
-        public Guid ProductId { get; set; }
-        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
     }

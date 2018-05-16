@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using Refactor.Persistance.Entities;
 
-namespace Refactor.Persistance
+namespace Refactor.Persistance.Repositories
 {
     public class EntityFrameworkRepository<T> : IRepository<T> where T : Model
     {

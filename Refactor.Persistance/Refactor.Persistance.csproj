@@ -48,10 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityFrameworkRepository.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="ModelMapping.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="Repositories\EntityFrameworkRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Entities\Model.cs" />
+    <Compile Include="Mappings\ModelMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

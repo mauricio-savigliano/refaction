@@ -1,4 +1,6 @@
-﻿using System.Web.Http;
+﻿using System.Runtime.CompilerServices;
+using System.Web.Http;
+using refactor_me.Filters;
 
 namespace refactor_me
 {
@@ -19,6 +21,8 @@ namespace refactor_me
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Filters.Add(new DuplicatedEntityKeyActionFIlter());
         }
     }
 }

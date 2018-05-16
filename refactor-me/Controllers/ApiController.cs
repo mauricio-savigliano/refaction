@@ -1,6 +1,7 @@
-﻿using System.Web.Http;
+﻿using System.Net;
+using System.Web.Http;
 using Ninject;
-using Refactor.Mapping;
+using Refactor.Web.Common.Mappings;
 
 namespace refactor_me.Controllers
 {
@@ -9,5 +10,10 @@ namespace refactor_me.Controllers
     {
         [Inject]
         public IEntityMapper EntityMapper { protected get; set; }
+
+        protected void ThrowNotFoundException()
+        {
+            throw new HttpResponseException(HttpStatusCode.NotFound);
+        }
     }
 }

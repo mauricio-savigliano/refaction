@@ -1,4 +1,5 @@
 ﻿using Refactor.Persistance;
+using Refactor.Persistance.Mappings;
 
 namespace Refactor.Model.Persistance.Mappings
 {

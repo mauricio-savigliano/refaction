@@ -127,9 +127,12 @@
   <ItemGroup>
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\UnitOfWorkAttribute.cs" />
     <Compile Include="Attributes\ValidateModelAttribute.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Filters\DuplicatedEntityKeyActionFIlter.cs" />
+    <Compile Include="Filters\UnitOfWorkActionFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -148,10 +151,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Refactor.Mapping\Refactor.Mapping.csproj">
-      <Project>{369C4CF9-6778-4545-81E1-6DBE6BD59404}</Project>
-      <Name>Refactor.Mapping</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Refactor.Model.Persistance\Refactor.Model.Persistance.csproj">
       <Project>{126238CC-D307-4082-96D9-CD144E64E7F9}</Project>
       <Name>Refactor.Model.Persistance</Name>
@@ -163,6 +162,10 @@
     <ProjectReference Include="..\Refactor.Persistance\Refactor.Persistance.csproj">
       <Project>{B49EBA63-0078-408C-965A-A4257ABC47B2}</Project>
       <Name>Refactor.Persistance</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Refactor.Web.Common\Refactor.Web.Common.csproj">
+      <Project>{D07643C9-C63C-47E0-A028-5032372BB8DF}</Project>
+      <Name>Refactor.Web.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

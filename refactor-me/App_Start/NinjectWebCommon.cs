@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Web;
+using System.Web.Http.Filters;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
+using Ninject.Web.WebApi.FilterBindingSyntax;
 using refactor_me;
-using Refactor.Mapping;
-using Refactor.Model.Factories;
+using refactor_me.Attributes;
+using refactor_me.Filters;
 using Refactor.Model.Persistance;
 using Refactor.Persistance;
+using Refactor.Persistance.Repositories;
+using Refactor.Web.Common;
+using Refactor.Web.Common.Mappings;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
@@ -69,9 +74,11 @@ namespace refactor_me
             kernel.Bind<DbContext>().To<ModelPersistanceContext>().InRequestScope().
                 WithConstructorArgument(typeof(string), "name=ModelContext");
             kernel.Bind(typeof(IRepository<>)).To(typeof(EntityFrameworkRepository<>)).InRequestScope();
-            kernel.Bind<IProductFactory>().To<ProductFactory>();
-            kernel.Bind<IProductOptionFactory>().To<ProductOptionFactory>();
-            kernel.Bind<IEntityMapper>().To<EntityMapper>();
+            kernel.Bind<IEntityMapper>().To<EntityMapper>().InRequestScope();
+            kernel.Bind<IUnitOfWork>().To<NonTransactionalUnitOfWork>();
+
+            kernel.BindHttpFilter<UnitOfWorkActionFilter>(FilterScope.Controller).WhenControllerHas<UnitOfWorkAttribute>();
+            kernel.BindHttpFilter<UnitOfWorkActionFilter>(FilterScope.Action).WhenActionMethodHas<UnitOfWorkAttribute>();
         }
     }
 }

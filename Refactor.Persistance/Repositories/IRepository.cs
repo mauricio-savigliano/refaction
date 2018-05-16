@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Refactor.Persistance.Entities;
 
-namespace Refactor.Persistance
+namespace Refactor.Persistance.Repositories
 {
     public interface IRepository<T> : IQueryable<T>, IDisposable where T : Model
     {

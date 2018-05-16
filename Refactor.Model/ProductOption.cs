@@ -8,7 +8,7 @@ namespace Refactor.Model
         string Description { get; set; }
     }
 
-    public class ProductOption : Persistance.Model
+    public class ProductOption : Persistance.Entities.Model
     {
         public Guid ProductId { get; private set; }
         public string Name { get; private set; }

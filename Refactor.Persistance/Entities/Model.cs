@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Refactor.Persistance
+namespace Refactor.Persistance.Entities
 {
     public abstract class Model
     {
