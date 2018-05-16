@@ -1,8 +1,15 @@
-﻿using System;
+﻿using Refactor.Persistance;
 
-namespace Refactor.Model.Mappings
+namespace Refactor.Model.Persistance.Mappings
 {
-    public class Class1
+    public class ProductMapping : ModelMapping<Product>
     {
+        public ProductMapping()
+        {
+            Property(x => x.Name).IsRequired().HasMaxLength(100);
+            Property(x => x.Description).HasMaxLength(500);
+            Property(x => x.Price).IsRequired();
+            Property(x => x.DeliveryPrice).IsRequired();
+        }
     }
 }

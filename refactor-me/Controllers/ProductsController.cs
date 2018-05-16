@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 using AutoMapper;
+using refactor_me.Attributes;
 using refactor_me.Models;
+using Refactor.Mapping;
 using Refactor.Model;
 using Refactor.Model.Factories;
 using Refactor.Persistance;
@@ -12,7 +14,7 @@ using Refactor.Persistance;
 namespace refactor_me.Controllers
 {
     [RoutePrefix("products")]
-    public class ProductsController : ApiController
+    public class ProductsController : BaseApiController
     {
         private readonly IRepository<Product> _products;
         private readonly IRepository<ProductOption> _productOptions;
@@ -41,7 +43,9 @@ namespace refactor_me.Controllers
         [HttpGet]
         public ListWrapper<ProductData> GetAll()
         {
-            return new ListWrapper<ProductData>(Mapper.Map<IEnumerable<ProductData>>(_products));
+            var products = _products.ToList();
+            
+            return new ListWrapper<ProductData>(products.Select(EntityMapper.Map<Product, ProductData>));
         }
 
         [Route]
@@ -49,7 +53,8 @@ namespace refactor_me.Controllers
         public ListWrapper<ProductData> SearchByName(string name)
         {
             var filteredProducts = _products.Where(p => p.Name.Contains(name)).ToList();
-            return new ListWrapper<ProductData>(Mapper.Map<IEnumerable<ProductData>>(filteredProducts));
+            
+            return new ListWrapper<ProductData>(filteredProducts.Select(EntityMapper.Map<Product, ProductData>));
         }
 
         [Route("{id}")]
@@ -66,6 +71,7 @@ namespace refactor_me.Controllers
 
         [Route]
         [HttpPost]
+        [ValidateModel]
         public void Create(ProductData product)
         {
             var productToCreate = _productFactory.Create(product.Id, product);
@@ -75,12 +81,13 @@ namespace refactor_me.Controllers
 
         [Route("{id}")]
         [HttpPut]
+        [ValidateModel]
         public void Update(Guid id, ProductData product)
         {
             var productToUpdate = _products.GetById(product.Id);
 
             if (productToUpdate == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
             
             productToUpdate.Update(product);
 
@@ -105,7 +112,7 @@ namespace refactor_me.Controllers
         public ListWrapper<ProductOptionData> GetOptions(Guid productId)
         {
             var productOptions = _productOptions.Where(po => po.ProductId == productId).ToList();
-            return new ListWrapper<ProductOptionData>(Mapper.Map<IEnumerable<ProductOptionData>>(productOptions));
+            return new ListWrapper<ProductOptionData>(productOptions.Select(EntityMapper.Map<ProductOption, ProductOptionData>));
         }
 
         [Route("{productId}/options/{id}")]
@@ -122,21 +129,23 @@ namespace refactor_me.Controllers
 
         [Route("{productId}/options")]
         [HttpPost]
+        [ValidateModel]
         public void CreateOption(Guid productId, ProductOptionData option)
         {
-            var newProductOption = _productOptionFactory.Create(option.Id, option);
+            var newProductOption = _productOptionFactory.Create(option.Id, option.ProductId, option);
             _productOptions.Add(newProductOption);
             _productOptions.SaveChanges();
         }
 
         [Route("{productId}/options/{id}")]
         [HttpPut]
+        [ValidateModel]
         public void UpdateOption(Guid id, ProductOptionData option)
         {
             var optionToUpdate = _productOptions.GetById(id);
 
             if (optionToUpdate == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
 
             optionToUpdate.Update(option);
 

@@ -10,7 +10,7 @@ namespace Refactor.Model.Factories
 
     public interface IProductOptionFactory
     {
-        ProductOption Create(Guid id, IProductOptionInfo info);
+        ProductOption Create(Guid id, Guid productId, IProductOptionInfo info);
     }
 
     public class ProductFactory : IProductFactory
@@ -25,9 +25,9 @@ namespace Refactor.Model.Factories
 
     public class ProductOptionFactory : IProductOptionFactory
     {
-        public ProductOption Create(Guid id, IProductOptionInfo info)
+        public ProductOption Create(Guid id, Guid productId, IProductOptionInfo info)
         {
-            var productOption = new ProductOption(id);
+            var productOption = new ProductOption(id, productId);
             productOption.Update(info);
             return productOption;
         }

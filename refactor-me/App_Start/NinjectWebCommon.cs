@@ -6,6 +6,8 @@ using Ninject;
 using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
 using refactor_me;
+using Refactor.Mapping;
+using Refactor.Model.Factories;
 using Refactor.Model.Persistance;
 using Refactor.Persistance;
 
@@ -67,6 +69,9 @@ namespace refactor_me
             kernel.Bind<DbContext>().To<ModelPersistanceContext>().InRequestScope().
                 WithConstructorArgument(typeof(string), "name=ModelContext");
             kernel.Bind(typeof(IRepository<>)).To(typeof(EntityFrameworkRepository<>)).InRequestScope();
+            kernel.Bind<IProductFactory>().To<ProductFactory>();
+            kernel.Bind<IProductOptionFactory>().To<ProductOptionFactory>();
+            kernel.Bind<IEntityMapper>().To<EntityMapper>();
         }
     }
 }

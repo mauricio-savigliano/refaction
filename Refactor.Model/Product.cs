@@ -17,6 +17,8 @@ namespace Refactor.Model
         public decimal Price { get; private set; }
         public decimal DeliveryPrice { get; private set; }
 
+        protected Product(){ }
+
         public Product(Guid id)
         {
             Id = id;

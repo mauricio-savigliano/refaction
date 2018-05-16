@@ -2,7 +2,7 @@
 
 namespace Refactor.Persistance
 {
-    public class ModelMapping<T> : EntityTypeConfiguration<T> where T : Persistance.Model
+    public class ModelMapping<T> : EntityTypeConfiguration<T> where T : Model
     {
         public ModelMapping()
         {

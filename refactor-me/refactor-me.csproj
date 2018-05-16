@@ -127,6 +127,8 @@
   <ItemGroup>
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\ValidateModelAttribute.cs" />
+    <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -146,6 +148,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Refactor.Mapping\Refactor.Mapping.csproj">
+      <Project>{369C4CF9-6778-4545-81E1-6DBE6BD59404}</Project>
+      <Name>Refactor.Mapping</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Refactor.Model.Persistance\Refactor.Model.Persistance.csproj">
       <Project>{126238CC-D307-4082-96D9-CD144E64E7F9}</Project>
       <Name>Refactor.Model.Persistance</Name>

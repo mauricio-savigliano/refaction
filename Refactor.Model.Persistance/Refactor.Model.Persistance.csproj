@@ -62,9 +62,11 @@
       <Project>{12FA8A1B-CC9C-4040-9142-4F1E86AE7A8D}</Project>
       <Name>Refactor.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Refactor.Persistance\Refactor.Persistance.csproj">
+      <Project>{b49eba63-0078-408c-965a-a4257abc47b2}</Project>
+      <Name>Refactor.Persistance</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

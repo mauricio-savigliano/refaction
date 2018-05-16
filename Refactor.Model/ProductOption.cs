@@ -14,10 +14,7 @@ namespace Refactor.Model
         public string Name { get; private set; }
         public string Description { get; private set; }
 
-        public ProductOption(Guid productId)
-        {
-            ProductId = productId;
-        }
+        protected ProductOption() { }
 
         public ProductOption(Guid id, Guid productId)
         {
