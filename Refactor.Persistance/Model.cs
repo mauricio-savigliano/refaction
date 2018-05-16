@@ -6,9 +6,11 @@ namespace Refactor.Persistance
     {
         public Guid Id { get; set; }
 
-        protected Model()
+        protected Model() : this(Guid.NewGuid()) { }
+
+        protected Model(Guid id)
         {
-            Id = Guid.NewGuid();
+            Id = id;
         }
     }
 }

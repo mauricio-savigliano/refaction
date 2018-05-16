@@ -1,8 +1,9 @@
 ﻿using System;
+using Refactor.Model;
 
 namespace refactor_me.Models
 {
-    public class ProductData
+    public class ProductData : IProductInfo
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

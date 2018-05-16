@@ -2,12 +2,33 @@
 
 namespace Refactor.Model
 {
+    public interface IProductOptionInfo
+    {
+        string Name { get; set; }
+        string Description { get; set; }
+    }
+
     public class ProductOption : Persistance.Model
     {
-        public Guid ProductId { get; set; }
+        public Guid ProductId { get; private set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
 
-        public string Name { get; set; }
+        public ProductOption(Guid productId)
+        {
+            ProductId = productId;
+        }
 
-        public string Description { get; set; }
+        public ProductOption(Guid id, Guid productId)
+        {
+            Id = id;
+            ProductId = productId;
+        }
+
+        public void Update(IProductOptionInfo info)
+        {
+            Name = info.Name;
+            Description = info.Description;
+        }
     }
 }

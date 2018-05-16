@@ -9,15 +9,11 @@ namespace Refactor.Model.Persistance
         public DbSet<Product> Products { get; }
         public DbSet<ProductOption> ProductOptions { get; }
 
-        public ModelPersistanceContext(string connectionString) : base(connectionString)
-        {
-            
-        }
+        public ModelPersistanceContext(string connectionString) : base(connectionString) { }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.AddFromAssembly(Assembly.GetExecutingAssembly());
-
             base.OnModelCreating(modelBuilder);
         }
     }

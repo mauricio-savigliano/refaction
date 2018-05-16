@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
+using AutoMapper;
 using refactor_me.Models;
 using Refactor.Model;
+using Refactor.Model.Factories;
 using Refactor.Persistance;
 
 namespace refactor_me.Controllers
@@ -13,29 +16,40 @@ namespace refactor_me.Controllers
     {
         private readonly IRepository<Product> _products;
         private readonly IRepository<ProductOption> _productOptions;
+        private readonly IProductFactory _productFactory;
+        private readonly IProductOptionFactory _productOptionFactory;
 
-        protected ProductsController() { }
+        protected ProductsController(IProductFactory productFactory, IProductOptionFactory productOptionFactory)
+        {
+            _productFactory = productFactory;
+            _productOptionFactory = productOptionFactory;
+        }
             
-        public ProductsController(IRepository<Product> products, IRepository<ProductOption> productOptions)
+        public ProductsController(
+            IRepository<Product> products, 
+            IRepository<ProductOption> productOptions, 
+            IProductFactory productFactory, 
+            IProductOptionFactory productOptionFactory)
         {
             _products = products;
             _productOptions = productOptions;
+            _productFactory = productFactory;
+            _productOptionFactory = productOptionFactory;
         }
 
         [Route]
         [HttpGet]
-        public ProductsData GetAll()
+        public ListWrapper<ProductData> GetAll()
         {
-            return new ProductsData(_products.ToList());
+            return new ListWrapper<ProductData>(Mapper.Map<IEnumerable<ProductData>>(_products));
         }
 
         [Route]
         [HttpGet]
-        public ProductsData SearchByName(string name)
+        public ListWrapper<ProductData> SearchByName(string name)
         {
-            var products = _products.Where(p => p.Name.CompareTo(name,) > 0);
-
-            return new ProductsData(name);
+            var filteredProducts = _products.Where(p => p.Name.Contains(name)).ToList();
+            return new ListWrapper<ProductData>(Mapper.Map<IEnumerable<ProductData>>(filteredProducts));
         }
 
         [Route("{id}")]
@@ -52,9 +66,10 @@ namespace refactor_me.Controllers
 
         [Route]
         [HttpPost]
-        public void Create(Product product)
+        public void Create(ProductData product)
         {
-            _products.Add(product);
+            var productToCreate = _productFactory.Create(product.Id, product);
+            _products.Add(productToCreate);
             _products.SaveChanges();
         }
 
@@ -65,15 +80,9 @@ namespace refactor_me.Controllers
             var productToUpdate = _products.GetById(product.Id);
 
             if (productToUpdate == null)
-            {
-                productToUpdate = new Product();
-                _products.Add(productToUpdate);
-            }
-
-            productToUpdate.Name = product.Name;
-            productToUpdate.Description = product.Description;
-            productToUpdate.Price = product.Price;
-            productToUpdate.DeliveryPrice = product.DeliveryPrice;
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            
+            productToUpdate.Update(product);
 
             _products.SaveChanges();
         }
@@ -84,19 +93,19 @@ namespace refactor_me.Controllers
         {
             var product = _products.GetById(id);
 
-            if (product != null)
-            {
-                _products.Remove(product);
-                _products.SaveChanges();
-            }
+            if (product == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            _products.Remove(product);
+            _products.SaveChanges();
         }
 
         [Route("{productId}/options")]
         [HttpGet]
-        public ProductOptionsData GetOptions(Guid productId)
+        public ListWrapper<ProductOptionData> GetOptions(Guid productId)
         {
-            var productOptions = _productOptions.Where(po => po.ProductId == productId);
-            return new ProductOptionsData(productOptions);
+            var productOptions = _productOptions.Where(po => po.ProductId == productId).ToList();
+            return new ListWrapper<ProductOptionData>(Mapper.Map<IEnumerable<ProductOptionData>>(productOptions));
         }
 
         [Route("{productId}/options/{id}")]
@@ -113,24 +122,23 @@ namespace refactor_me.Controllers
 
         [Route("{productId}/options")]
         [HttpPost]
-        public void CreateOption(Guid productId, ProductOption option)
+        public void CreateOption(Guid productId, ProductOptionData option)
         {
-            var productOption = _productOptions.GetById();
-
-            //option.ProductId = productId;
-            //option.Save();
+            var newProductOption = _productOptionFactory.Create(option.Id, option);
+            _productOptions.Add(newProductOption);
+            _productOptions.SaveChanges();
         }
 
         [Route("{productId}/options/{id}")]
         [HttpPut]
-        public void UpdateOption(Guid id, ProductOption option)
+        public void UpdateOption(Guid id, ProductOptionData option)
         {
             var optionToUpdate = _productOptions.GetById(id);
 
-            if (optionToUpdate == null) return;
+            if (optionToUpdate == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            optionToUpdate.Description = option.Description;
-            optionToUpdate.Name = option.Name;
+            optionToUpdate.Update(option);
 
             _productOptions.SaveChanges();
         }
@@ -141,8 +149,10 @@ namespace refactor_me.Controllers
         {
             var productOptionToDelete = _productOptions.GetById(id);
             
-            if (productOptionToDelete != null)
-                _productOptions.Remove(productOptionToDelete);
+            if (productOptionToDelete == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            _productOptions.Remove(productOptionToDelete);
         }
 
         protected override void Dispose(bool disposing)
